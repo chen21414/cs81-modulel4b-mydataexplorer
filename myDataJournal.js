@@ -25,3 +25,85 @@ function findHighestScreenTime(data) {
 
   return highestDay;
 }
+
+function averageSleep(data) {
+  let totalSleep = 0;
+
+  for (let day of data) {
+    totalSleep += day.sleepHours;
+  }
+
+  return totalSleep / data.length;
+}
+
+function mostFrequentMood(data) {
+  let moodCounts = {};
+
+  for (let day of data) {
+    if (moodCounts[day.mood]) {
+      moodCounts[day.mood]++;
+    } else {
+      moodCounts[day.mood] = 1;
+    }
+  }
+
+  let mostCommonMood = "";
+  let highestCount = 0;
+
+  for (let mood in moodCounts) {
+    if (moodCounts[mood] > highestCount) {
+      highestCount = moodCounts[mood];
+      mostCommonMood = mood;
+    }
+  }
+
+  return mostCommonMood;
+}
+
+function findBestFocusDay(data) {
+  let bestDay = data[0]; //Starts by assuming the first day is the best.
+
+  for (let day of data) {
+    if (day.focusLevel > bestDay.focusLevel) {
+      bestDay = day;
+    }
+  }
+
+  return bestDay;
+}
+
+function correlateCaffeineToFocus(data) {
+  let highCaffeineFocus = 0;
+  let highCaffeineDays = 0;
+  let lowCaffeineFocus = 0;
+  let lowCaffeineDays = 0;
+
+  for (let day of data) {
+    if (day.caffeineIntake >= 3) {
+      highCaffeineFocus += day.focusLevel;
+      highCaffeineDays++;
+    } else {
+      lowCaffeineFocus += day.focusLevel;
+      lowCaffeineDays++;
+    }
+  }
+
+  let highAverage = highCaffeineFocus / highCaffeineDays;
+  let lowAverage = lowCaffeineFocus / lowCaffeineDays;
+
+  if (highAverage > lowAverage) {
+    return "More caffeine seems to help focus.";
+  } else {
+    return "More caffeine does not seem to improve focus.";
+  }
+}
+
+let highestScreenDay = findHighestScreenTime(weekData);
+let bestFocusDay = findBestFocusDay(weekData);
+
+console.log("Analyzing Mike's Data Journal...");
+console.log("Most screen time: " + highestScreenDay.day + " (" + highestScreenDay.screenTime + " hrs)");
+console.log("Average sleep: " + averageSleep(weekData).toFixed(1) + " hrs");
+console.log("Most frequent mood: " + mostFrequentMood(weekData));
+console.log("Best focus day: " + bestFocusDay.day + " (" + bestFocusDay.focusLevel + "/10)");
+console.log("Does more caffeine mean better focus? " + correlateCaffeineToFocus(weekData));
